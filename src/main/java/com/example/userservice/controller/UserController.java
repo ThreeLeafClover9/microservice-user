@@ -1,12 +1,12 @@
 package com.example.userservice.controller;
 
 import com.example.userservice.dto.SignUpRequestDto;
+import com.example.userservice.dto.UserResponseDto;
 import com.example.userservice.service.UserService;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/users")
@@ -17,9 +17,21 @@ public class UserController {
         this.userService = userService;
     }
 
-    @PostMapping("sign-up")
+    @PostMapping("/sign-up")
     public ResponseEntity<Void> signUp(@RequestBody SignUpRequestDto signUpRequestDto) {
         userService.signUp(signUpRequestDto);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<UserResponseDto> getUser(@PathVariable Long id) {
+        UserResponseDto userResponseDto = userService.getUser(id);
+        return ResponseEntity.ok(userResponseDto);
+    }
+
+    @GetMapping()
+    public ResponseEntity<List<UserResponseDto>> getUsersByIds(@RequestParam List<Long> ids) {
+        List<UserResponseDto> userResponseDtos = userService.getUsersByIds(ids);
+        return ResponseEntity.ok(userResponseDtos);
     }
 }
