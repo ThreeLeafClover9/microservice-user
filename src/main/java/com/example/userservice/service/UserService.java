@@ -1,6 +1,8 @@
 package com.example.userservice.service;
 
+import com.example.userservice.client.PointClient;
 import com.example.userservice.domain.User;
+import com.example.userservice.dto.AddActivityScoreRequestDto;
 import com.example.userservice.dto.SignUpRequestDto;
 import com.example.userservice.domain.UserRepository;
 import com.example.userservice.dto.UserResponseDto;
@@ -12,9 +14,11 @@ import java.util.List;
 @Service
 public class UserService {
     private final UserRepository userRepository;
+    private final PointClient pointClient;
 
-    public UserService(UserRepository userRepository) {
+    public UserService(UserRepository userRepository, PointClient pointClient) {
         this.userRepository = userRepository;
+        this.pointClient = pointClient;
     }
 
     @Transactional
@@ -24,7 +28,9 @@ public class UserService {
                 signUpRequestDto.getName(),
                 signUpRequestDto.getPassword()
         );
-        this.userRepository.save(user);
+        User savedUser = this.userRepository.save(user);
+
+        pointClient.addPoint(savedUser.getId(), 1000);
     }
 
     public UserResponseDto getUser(Long id) {
@@ -48,5 +54,14 @@ public class UserService {
                         user.getName()
                 ))
                 .toList();
+    }
+
+    @Transactional
+    public void addActivityScore(AddActivityScoreRequestDto addActivityScoreRequestDto) {
+        User user = userRepository.findById(addActivityScoreRequestDto.getId())
+                .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
+        user.addActivityScore(addActivityScoreRequestDto.getScore());
+
+        userRepository.save(user);
     }
 }

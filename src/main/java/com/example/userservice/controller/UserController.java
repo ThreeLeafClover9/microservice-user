@@ -1,5 +1,6 @@
 package com.example.userservice.controller;
 
+import com.example.userservice.dto.AddActivityScoreRequestDto;
 import com.example.userservice.dto.SignUpRequestDto;
 import com.example.userservice.dto.UserResponseDto;
 import com.example.userservice.service.UserService;
@@ -33,5 +34,11 @@ public class UserController {
     public ResponseEntity<List<UserResponseDto>> getUsersByIds(@RequestParam List<Long> ids) {
         List<UserResponseDto> userResponseDtos = userService.getUsersByIds(ids);
         return ResponseEntity.ok(userResponseDtos);
+    }
+
+    @PostMapping("/activity-score/add")
+    public ResponseEntity<Void> addActivityScore(@RequestBody AddActivityScoreRequestDto addActivityScoreRequestDto) {
+        userService.addActivityScore(addActivityScoreRequestDto);
+        return ResponseEntity.noContent().build();
     }
 }
