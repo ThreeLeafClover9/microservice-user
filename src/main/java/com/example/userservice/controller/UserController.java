@@ -1,16 +1,12 @@
 package com.example.userservice.controller;
 
-import com.example.userservice.dto.AddActivityScoreRequestDto;
 import com.example.userservice.dto.SignUpRequestDto;
-import com.example.userservice.dto.UserResponseDto;
 import com.example.userservice.service.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @RestController
-@RequestMapping("/users")
+@RequestMapping("/api/users")
 public class UserController {
     private final UserService userService;
 
@@ -21,24 +17,6 @@ public class UserController {
     @PostMapping("/sign-up")
     public ResponseEntity<Void> signUp(@RequestBody SignUpRequestDto signUpRequestDto) {
         userService.signUp(signUpRequestDto);
-        return ResponseEntity.noContent().build();
-    }
-
-    @GetMapping("/{id}")
-    public ResponseEntity<UserResponseDto> getUser(@PathVariable Long id) {
-        UserResponseDto userResponseDto = userService.getUser(id);
-        return ResponseEntity.ok(userResponseDto);
-    }
-
-    @GetMapping()
-    public ResponseEntity<List<UserResponseDto>> getUsersByIds(@RequestParam List<Long> ids) {
-        List<UserResponseDto> userResponseDtos = userService.getUsersByIds(ids);
-        return ResponseEntity.ok(userResponseDtos);
-    }
-
-    @PostMapping("/activity-score/add")
-    public ResponseEntity<Void> addActivityScore(@RequestBody AddActivityScoreRequestDto addActivityScoreRequestDto) {
-        userService.addActivityScore(addActivityScoreRequestDto);
         return ResponseEntity.noContent().build();
     }
 }
